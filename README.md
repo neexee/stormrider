@@ -1,2 +1,2 @@
 # stormrider
-Audiosurf+supertuxkart game
+Rhythm game
