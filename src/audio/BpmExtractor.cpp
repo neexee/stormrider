@@ -66,13 +66,7 @@ void BpmExtractor::Read()
 	{
 		source_.Do(ibuf_, &read);
 		Process();
-		// print to console if verbose or no output given
 		INFO << boost::format("Got tempo: %1") % tempo_.GetLastDetectedBeatTime();
-/*		if (this_sink)
-		{
-			aubio_sink_do(this_sink, obuf, hop_size);
-		}
-*/
 		blocks++;
 		total_read += read;
 	} while (read == hop_size);
