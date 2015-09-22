@@ -9,6 +9,8 @@ namespace audio
 
 class ExtractorSettings
 {
+	typedef unsigned int uint_t;
+	typedef float smpl_t;
 public:
 	ExtractorSettings();
 	~ExtractorSettings();
