@@ -43,15 +43,46 @@ find_package(Vamp REQUIRED)
 INCLUDE_DIRECTORIES(${VAMP_INCLUDE_DIR})
 list(APPEND LIBRARIES ${VAMP_LIBRARY})
 
+#OGRE
+if(EXISTS "${OGRE_HOME}")
+
+	set(CMAKE_MODULE_PATH "${OGRE_HOME}/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
+	set(OGRE_SAMPLES_INCLUDEPATH "${OGRE_HOME}/share/OGRE/samples/Common/include/")
+
+elseif(EXISTS "$ENV{OGRE_HOME}")
+
+	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
+	set(OGRE_SAMPLES_INCLUDEPATH "$ENV{OGRE_HOME}/share/OGRE/samples/Common/include/")
+
+elseif(EXISTS "/usr/local/lib/OGRE/cmake")
+
+	set(CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
+	set(OGRE_SAMPLES_INCLUDEPATH "/usr/local/share/OGRE/samples/Common/include/") # We could just *assume* that developers uses this basepath : /usr/local
+
+elseif(EXISTS "/usr/lib/OGRE/cmake")
+
+	set(CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
+	set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/samples/Common/include/") # Otherwise, this one
+else ()
+	message(SEND_ERROR "Failed to find module path.")
+endif(EXISTS "${OGRE_HOME}")
+find_package(OIS REQUIRED)
+find_package(OGRE REQUIRED)
+
+include_directories( ${OIS_INCLUDE_DIRS}
+	${OGRE_INCLUDE_DIRS}
+	${OGRE_SAMPLES_INCLUDEPATH}
+	${OGRE_Overlay_INCLUDE_DIRS}
+)
+list(APPEND LIBRARIES ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
 
 if(UNIX OR MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++1y")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++1y -g")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 endif()
 
 # Build the final executable
 add_executable(stormrider ${STORMRIDER_SOURCES} ${STORMRIDER_HEADERS})
-
 
 # Common library dependencies
 target_link_libraries(stormrider ${LIBRARIES})

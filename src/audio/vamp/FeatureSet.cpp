@@ -39,6 +39,21 @@ bool FeatureSet::HasOutput(int output)
 	return feature_set_.find(output) != feature_set_.end();
 }
 
+const FeatureSet::TimeGraphPoint FeatureSet::GetTimeGraphPoint(int output)
+{
+	typedef Vamp::RealTime RT;
+	auto feature_list_it = feature_set_.find(output);
+	TimeGraphPoint point;
+	if (feature_list_it != feature_set_.end())
+	{
+		auto feature_list = (*feature_list_it).second;
+		auto feature = feature_list[0];
+		auto time = RT::frame2RealTime(frame_, samplerate_).usec();
+		point =  std::make_pair(time, feature.values[0]);
+	}
+	return point;
+}
+
 void FeatureSet::print(std::ostream& stream, int output, bool use_frames)
 {
 	typedef Vamp::RealTime RT;
